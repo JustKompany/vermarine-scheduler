@@ -12,6 +12,8 @@ import java.util.Date;
 
 public class VermarineServer extends AbstractVerticle {
   public void start() throws SchedulerException {
+    Configuration configuration = new Configuration();
+
     HttpServer httpServer = vertx.createHttpServer();
 
     Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -46,6 +48,6 @@ public class VermarineServer extends AbstractVerticle {
         event.response().end();
       });
 
-    httpServer.requestHandler(router::accept).listen(8080);
+    httpServer.requestHandler(router::accept).listen(configuration.getPort());
   }
 }
