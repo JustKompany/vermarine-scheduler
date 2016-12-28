@@ -1,7 +1,7 @@
 package com.vermarine;
 
 import com.vermarine.scheduler.UrlJobExecutor;
-import io.vertx.core.Vertx;
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
@@ -10,9 +10,8 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
 
-public class VermarineServer {
-  public static void main(String[] args) throws SchedulerException {
-    Vertx vertx = Vertx.vertx();
+public class VermarineServer extends AbstractVerticle {
+  public void start() throws SchedulerException {
     HttpServer httpServer = vertx.createHttpServer();
 
     Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();

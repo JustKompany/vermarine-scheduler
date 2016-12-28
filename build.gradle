@@ -17,3 +17,9 @@ dependencies {
 
   testCompile group: 'junit', name: 'junit', version: '4.11'
 }
+
+task buildClasspath(type: Sync) {
+  from configurations.runtime
+  from jar
+  into file("${buildDir}/classpath")
+}
