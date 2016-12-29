@@ -7,6 +7,6 @@ import org.quartz.JobExecutionException;
 public class UrlJobExecutor implements Job {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
-    System.out.println("Url Job Executor: " + context.get("url_job_id"));
+    System.out.println("Url Job Executor: " + context.getJobDetail().getJobDataMap().get("url_job_id"));
   }
 }
