@@ -6,3 +6,11 @@ services:
     ports:
     - "8080:8080"
     image: vermarine/scheduler
+    links:
+    - mysql
+
+  mysql:
+    build: src/main/mysql-example
+    ports:
+    - "3306:3306"
+    image: vermarine/example-mysql
