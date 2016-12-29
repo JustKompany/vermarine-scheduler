@@ -2,8 +2,20 @@ group = 'com.vermarine'
 
 apply plugin: 'java'
 
+sourceCompatibility = 1.8
+
 repositories {
   mavenCentral()
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url 'http://repo.javalite.io' }
+  }
+  dependencies {
+    classpath group: 'org.javalite', name: 'activejdbc-gradle-plugin', version: '1.4.13-SNAPSHOT'
+  }
 }
 
 dependencies {
@@ -23,3 +35,5 @@ task buildClasspath(type: Sync) {
   from jar
   into file("${buildDir}/classpath")
 }
+
+apply plugin: 'org.javalite.activejdbc'

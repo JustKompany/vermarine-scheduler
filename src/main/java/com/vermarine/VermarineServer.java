@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class VermarineServer extends AbstractVerticle {
   public void start() throws SchedulerException {
-    Configuration configuration = new Configuration();
+    VermarineConfiguration configuration = new VermarineConfiguration(System.getenv());
 
     HttpServer httpServer = vertx.createHttpServer();
 
