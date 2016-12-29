@@ -5,9 +5,16 @@ services:
     build: .
     ports:
     - "8080:8080"
+    - "8787:8787"
     image: vermarine/scheduler
     links:
     - mysql
+    environment:
+    - "VERAMINE_DATABASE_DRIVER=com.mysql.jdbc.Driver"
+    - "VERAMINE_DATABASE_URL=jdbc:mysql://mysql/vermarine"
+    - "VERAMINE_DATABASE_USERNAME=root"
+    - "VERAMINE_DATABASE_PASSWORD=password"
+    - "VERTX_OPTS='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787'"
 
   mysql:
     build: src/main/mysql-example

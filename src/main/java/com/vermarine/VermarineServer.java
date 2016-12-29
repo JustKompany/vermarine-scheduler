@@ -1,30 +1,55 @@
 package com.vermarine;
 
+import com.vermarine.configuration.RequiredConfigurationMissingException;
+import com.vermarine.database.DatabaseFacade;
+import com.vermarine.scheduler.UrlJob;
 import com.vermarine.scheduler.UrlJobExecutor;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
+import java.util.Map;
 
 public class VermarineServer extends AbstractVerticle {
-  public void start() throws SchedulerException {
-    VermarineConfiguration configuration = new VermarineConfiguration(System.getenv());
+  public void start() throws SchedulerException, RequiredConfigurationMissingException {
+    Map<String, String> environment = System.getenv();
+    VermarineConfiguration configuration = new VermarineConfiguration(environment);
 
     HttpServer httpServer = vertx.createHttpServer();
 
     Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
     scheduler.start();
 
+    DatabaseFacade databaseFacade = new DatabaseFacade(environment);
+
     Router router = Router.router(vertx);
+
+    router.route().handler(BodyHandler.create());
 
     router.route(HttpMethod.POST, "/cron/dailyAtHourAndMinute/:hour/:minute")
       .handler(event -> {
         final String hour = event.pathParam("hour");
         final String minute = event.pathParam("minute");
+
+        JsonObject body = event.getBodyAsJson();
+        String url = body.getString("url");
+
+        Long urlJobId = null;
+        try {
+          urlJobId = databaseFacade.execute(() -> {
+            UrlJob urlJob = new UrlJob(url);
+            urlJob.save();
+            return urlJob.getLongId();
+          });
+        } catch (Exception e) {
+          System.out.println("Failed to save urlJob: " + e.getMessage());
+        }
 
         CronTrigger trigger = TriggerBuilder.newTrigger()
           .startNow()
@@ -32,8 +57,8 @@ public class VermarineServer extends AbstractVerticle {
           .build();
 
         JobDetail jobDetail = JobBuilder.newJob(UrlJobExecutor.class)
-          .usingJobData("url_job_id", (String) null)
-          .withIdentity("url_job" + hour, "url-jobs")
+          .usingJobData("url_job_id", urlJobId)
+          .withIdentity("url_job_" + urlJobId, "url-jobs")
           .build();
 
         try {
