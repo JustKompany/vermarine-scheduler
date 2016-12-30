@@ -18,10 +18,14 @@ services:
     - "VERTX_OPTS='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8787'"
 
   mysql:
-    build: src/main/mysql-example
     ports:
     - "3306:3306"
-    image: vermarine/example-mysql
+    image: "mysql:5.7"
+    environment:
+    - "MYSQL_ROOT_PASSWORD=password"
+    - "MYSQL_DATABASE=vermarine"
+    volumes:
+    - "./src/main/mysql-example/init.sql:/docker-entrypoint-initdb.d/init.sql"
 
   test-server:
     image: nginx:latest
