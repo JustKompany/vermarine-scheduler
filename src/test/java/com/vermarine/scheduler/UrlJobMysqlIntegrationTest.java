@@ -26,10 +26,10 @@ public class UrlJobMysqlIntegrationTest {
 
   @Test
   public void testSaveAndFindById() {
-    UrlJob urlJob = new UrlJob("www.example.com");
+    UrlJobActiveJdbcImpl urlJob = new UrlJobActiveJdbcImpl("www.example.com", "GET");
     urlJob.save();
 
-    UrlJob loadedUrlJob = UrlJob.findById(urlJob.getId());
+    UrlJobActiveJdbcImpl loadedUrlJob = UrlJobActiveJdbcImpl.findById(urlJob.getId());
     Assert.assertEquals("www.example.com", loadedUrlJob.getUrl());
   }
 

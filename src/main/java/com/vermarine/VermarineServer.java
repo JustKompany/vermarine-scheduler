@@ -2,7 +2,7 @@ package com.vermarine;
 
 import com.vermarine.configuration.RequiredConfigurationMissingException;
 import com.vermarine.database.DatabaseFacade;
-import com.vermarine.scheduler.UrlJob;
+import com.vermarine.scheduler.UrlJobActiveJdbcImpl;
 import com.vermarine.scheduler.UrlJobExecutor;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpMethod;
@@ -39,11 +39,12 @@ public class VermarineServer extends AbstractVerticle {
 
         JsonObject body = event.getBodyAsJson();
         String url = body.getString("url");
+        String method = body.getString("method");
 
         Long urlJobId = null;
         try {
           urlJobId = databaseFacade.execute(() -> {
-            UrlJob urlJob = new UrlJob(url);
+            UrlJobActiveJdbcImpl urlJob = new UrlJobActiveJdbcImpl(url, method);
             urlJob.save();
             return urlJob.getLongId();
           });

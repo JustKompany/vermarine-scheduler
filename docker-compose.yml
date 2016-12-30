@@ -9,6 +9,7 @@ services:
     image: vermarine/scheduler
     links:
     - mysql
+    - test-server
     environment:
     - "VERAMINE_DATABASE_DRIVER=com.mysql.jdbc.Driver"
     - "VERAMINE_DATABASE_URL=jdbc:mysql://mysql/vermarine"
@@ -21,3 +22,10 @@ services:
     ports:
     - "3306:3306"
     image: vermarine/example-mysql
+
+  test-server:
+    image: nginx:latest
+    ports:
+    - "8081:80"
+    volumes:
+    - "./src/main/nginx-example:/usr/share/nginx/html"
