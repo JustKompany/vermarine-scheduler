@@ -24,7 +24,13 @@ public class UrlJobExecutor implements Job {
     Long jobId = (Long) jobDataMap.get("url_job_id");
     UrlJobActiveJdbcImpl urlJob = UrlJobActiveJdbcImpl.findById(jobId);
 
-    UrlJobResult urlJobResult = urlJobHandler.handle(urlJob);
+    UrlJobResult urlJobResult;
+    try {
+      urlJobResult = urlJobHandler.handle(urlJob);
+    } catch(Throwable throwable) {
+      System.out.println("Failure: " + throwable.getMessage());
+      throw throwable;
+    }
     System.out.println("UrlJobResult: " + urlJobResult.getBody());
   }
 }

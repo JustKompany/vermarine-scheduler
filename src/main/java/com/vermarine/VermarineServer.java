@@ -4,6 +4,7 @@ import com.vermarine.configuration.RequiredConfigurationMissingException;
 import com.vermarine.database.DatabaseFacade;
 import com.vermarine.scheduler.UrlJobActiveJdbcImpl;
 import com.vermarine.scheduler.UrlJobExecutor;
+import com.vermarine.scheduler.UrlJobHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
@@ -31,6 +32,9 @@ public class VermarineServer extends AbstractVerticle {
     Router router = Router.router(vertx);
 
     router.route().handler(BodyHandler.create());
+
+    UrlJobHandler urlJobHandler = new UrlJobHandler();
+    UrlJobExecutor.setUrlJobHandler(urlJobHandler);
 
     router.route(HttpMethod.POST, "/cron/dailyAtHourAndMinute/:hour/:minute")
       .handler(event -> {

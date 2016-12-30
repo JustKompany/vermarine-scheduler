@@ -1,9 +1,11 @@
 package com.vermarine.scheduler;
 
 import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
 
 import java.sql.Timestamp;
 
+@Table("url_jobs")
 public class UrlJobActiveJdbcImpl extends Model implements UrlJob {
   public UrlJobActiveJdbcImpl() {}
 
